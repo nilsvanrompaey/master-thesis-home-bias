@@ -1,0 +1,31 @@
+# Import dictionaries from separate files
+from utils.constants_values.ds_country_to_code import DS_COUNTRY_TO_CODE
+from utils.constants_values.wfe_country_to_code import WFE_COUNTRY_TO_CODE
+from utils.constants_values.wfe_exchange_to_code import WFE_EXCHANGE_TO_CODE
+from utils.constants_values.cpis_column_headers import CPIS_COLUMN_HEADERS, CPIS_COLUMN_HEADERS_HALF
+from utils.constants_values.cpis_country_to_code import CPIS_COUNTRY_TO_CODE
+from utils.constants_values.cpis_offshore_centers import CPIS_OFFSHORE_CENTERS
+from utils.constants_values.wfe_modifications import WFE_HU_2001
+
+class DS:
+    COUNTRY_TO_CODE = DS_COUNTRY_TO_CODE
+    COUNTRIES = list(COUNTRY_TO_CODE.keys())
+    CODES = list(COUNTRY_TO_CODE.values())
+    CODE_TO_COUNTRY = {v: k for k, v in COUNTRY_TO_CODE.items()}
+
+class WFE:
+    COUNTRY_TO_CODE = WFE_COUNTRY_TO_CODE
+    EXCHANGE_TO_CODE = WFE_EXCHANGE_TO_CODE
+    CODE_TO_COUNTRY = {v: k for k, v in COUNTRY_TO_CODE.items()}
+    COUNTRIES = list(COUNTRY_TO_CODE.keys())
+    CODES = list(COUNTRY_TO_CODE.values())
+    WFE_HU_2001 = WFE_HU_2001
+
+class CPIS:
+    COLUMN_HEADERS = CPIS_COLUMN_HEADERS
+    COLUMN_HEADERS_HALF = CPIS_COLUMN_HEADERS_HALF
+    COUNTRY_TO_CODE = CPIS_COUNTRY_TO_CODE
+    CODE_TO_COUNTRY = {v: k for k, v in COUNTRY_TO_CODE.items()}
+    OFFSHORE_CENTERS = CPIS_OFFSHORE_CENTERS
+    COUNTRIES = CPIS_COUNTRY_TO_CODE.keys()
+    CODES = CPIS_COUNTRY_TO_CODE.values()
