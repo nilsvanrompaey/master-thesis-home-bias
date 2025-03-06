@@ -7,15 +7,13 @@ from utils import *
 from adjustText import adjust_text
 from plot.plot import scatter_countries
 
-codes_to_drop = ["UK"]
-# codes_to_drop = []
-
 data = DataManager(
     raw_dir = "./data/raw",
     save_dir = "./data/clean"
 )
 data.load_data()
-ds = data.get_dataset("ds").drop([DS.CODE_TO_COUNTRY[code] for code in codes_to_drop])
+
+ds = data.get_dataset("ds")
 fed = data.get_dataset("fed")
 
 # Align the risk-free rate data with the returns data
@@ -40,7 +38,7 @@ var_log_excess = log_excess_returns.var(axis=1)
     
 scatter_countries(x=var_excess,
                   y=mean_excess,
-                  codes=DS.COUNTRIES,
+                  codes=DS.CODES,
                   x_label="Variance",
                   y_label="Mean",
                   title="Monthly log excess returns (USD)",
@@ -48,7 +46,7 @@ scatter_countries(x=var_excess,
 
 scatter_countries(x=var_log_excess,
                   y=mean_log_excess,
-                  codes=DS.COUNTRIES,
+                  codes=DS.CODES,
                   x_label="Variance",
                   y_label="Mean",
                   title="Monthly log excess returns (USD)",
