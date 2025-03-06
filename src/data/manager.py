@@ -62,7 +62,7 @@ class DataManager:
         """Load saved datasets into memory."""
         self.datasets = {
             # "cpis": self.loader.load_dataframe("cpis"),
-            "cpis": DataFrameCPIS(self.loader.load_dataframe("cpis").transpose()),
+            "cpis": DataFrameCPIS(self.loader.load_dataframe("cpis")),
             "ds": self.loader.load_dataframe("ds"),
             "fed": self.loader.load_dataframe("fed"),
             "wb": self.loader.load_dataframe("wb"),

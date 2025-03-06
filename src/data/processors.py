@@ -14,16 +14,16 @@ class DataFrameCPIS(pd.DataFrame):
         if holders != slice(None):
             holders = [holders] if isinstance(holders, str) else holders
             for i, holder in enumerate(holders):
-                if len(holder) == 2:
-                    holders[i] = CPIS.CODE_TO_COUNTRY[holder]
+                if len(holder) != 2:
+                    holders[i] = CPIS.COUNTRY_TO_CODE[holder]
             assert all(holder in self.index.get_level_values("Country Name") for holder in holders), "Holding country does not exist"
             
         issuers = slice(None) if issuers == "all" else issuers
         if issuers != slice(None):
             issuers = [issuers] if isinstance(issuers, str) else issuers
             for i, issuer in enumerate(issuers):
-                if len(issuer) == 2:
-                    issuers[i] = CPIS.CODE_TO_COUNTRY[issuer]
+                if len(issuer) != 2:
+                    issuers[i] = CPIS.COUNTRY_TO_CODE[issuer]
             assert all(issuer in self.index.get_level_values("Counterpart Country Name") for issuer in issuers), "Issuer country does not exist"
             
         periods = slice(None) if periods == "all" else periods
@@ -60,12 +60,10 @@ class DataFrameCPIS(pd.DataFrame):
         total_market_cap = wb.loc[sample_codes, range(2001,2005)]
         total_in_sample = self.get_data(issuers=sample_codes, holders="World", periods=range(2001,2005)).groupby("Counterpart Country Name").sum()
         
-        total_in_sample.index = [CPIS.COUNTRY_TO_CODE.get(index, "NA") for index in total_in_sample.index.tolist()]
         total_in_sample.rename_axis("Country Code", inplace=True)
         domestic_investments_temp = total_market_cap - total_in_sample
         domestic_investments = DataFrameCPIS(0.0, index=self.index, columns=self.columns)
-        for country_code, row in domestic_investments_temp.iterrows():
-            country = CPIS.CODE_TO_COUNTRY[country_code]
-            domestic_investments.loc[(country, country), range(2001,2005)] = row
+        for country, row in domestic_investments_temp.iterrows():
+            domestic_investments.loc[(country, country), range(2001,2005)] = row.to_numpy()
         
         return domestic_investments
