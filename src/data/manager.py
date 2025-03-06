@@ -24,8 +24,9 @@ class DataManager:
         self.datasets = {}
         try:
             self.load_data()
-        except FileNotFoundError:
+        except Exception:
             self.clean_and_save_data()
+        self.load_data()
 
     def clean_and_save_data(self):
         """Import, clean, and save all datasets."""
@@ -61,7 +62,7 @@ class DataManager:
         """Load saved datasets into memory."""
         self.datasets = {
             # "cpis": self.loader.load_dataframe("cpis"),
-            "cpis": DataFrameCPIS(self.loader.load_dataframe("cpis")),
+            "cpis": DataFrameCPIS(self.loader.load_dataframe("cpis").transpose()),
             "ds": self.loader.load_dataframe("ds"),
             "fed": self.loader.load_dataframe("fed"),
             "wb": self.loader.load_dataframe("wb"),

@@ -55,7 +55,7 @@ def import_wfe(file_path):
     Returns:
         pd.DataFrame: Raw WFE data
     """
-    return pd.read_excel(file_path, sheet_name=1, usecols="A:AC", skiprows=3, index_col=[0,1])
+    return pd.read_excel(file_path, sheet_name=1, usecols="A:AC", skiprows=3, index_col=0)
 
 def import_wb(file_path):
     """Import WB data from Excel file.
@@ -66,4 +66,4 @@ def import_wb(file_path):
     Returns:
         pd.DataFrame: Raw WB data
     """
-    return pd.read_excel(file_path, sheet_name=0, usecols="A:AC", index_col=0)
+    return pd.read_excel(file_path, sheet_name=0, usecols="A:AC", index_col=1)

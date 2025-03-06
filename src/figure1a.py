@@ -7,8 +7,8 @@ from utils import *
 from adjustText import adjust_text
 from plot.plot import scatter_countries
 
-# codes_to_drop = ["VE"]
-codes_to_drop = []
+codes_to_drop = ["UK"]
+# codes_to_drop = []
 
 data = DataManager(
     raw_dir = "./data/raw",

@@ -15,7 +15,7 @@ def scatter_countries(x, y, codes, x_label, y_label, title, save=None):
     
     # Save regression summary to text file
     summary_text = model.summary().as_text()
-    with open(f"./results/results/{save}.txt", "w") as f:
+    with open(f"./output/results/{save}.txt", "w") as f:
         f.write(summary_text)
 
     # Plot data

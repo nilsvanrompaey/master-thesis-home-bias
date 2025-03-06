@@ -46,7 +46,7 @@ class DataFrameCPIS(pd.DataFrame):
         return offshore_weights
 
     def distribute_offshore_holdings(self, offshore_investments, offshore_weights):
-        offshore_distribution = DataFrameCPIS(0, index=self.index, columns=self.columns)
+        offshore_distribution = DataFrameCPIS(0.0, index=self.index, columns=self.columns)
         for year in offshore_investments.columns:
             investments = offshore_investments.loc[:, year].unstack(level='Counterpart Country Name')
             weights = offshore_weights.loc[:, year].unstack(level='Counterpart Country Name').fillna(0)
@@ -55,3 +55,17 @@ class DataFrameCPIS(pd.DataFrame):
             
         offshore_distribution.fillna(0, inplace=True)
         return offshore_distribution
+    
+    def calculate_domestic_investments(self, sample_codes, wb):
+        total_market_cap = wb.loc[sample_codes, range(2001,2005)]
+        total_in_sample = self.get_data(issuers=sample_codes, holders="World", periods=range(2001,2005)).groupby("Counterpart Country Name").sum()
+        
+        total_in_sample.index = [CPIS.COUNTRY_TO_CODE.get(index, "NA") for index in total_in_sample.index.tolist()]
+        total_in_sample.rename_axis("Country Code", inplace=True)
+        domestic_investments_temp = total_market_cap - total_in_sample
+        domestic_investments = DataFrameCPIS(0.0, index=self.index, columns=self.columns)
+        for country_code, row in domestic_investments_temp.iterrows():
+            country = CPIS.CODE_TO_COUNTRY[country_code]
+            domestic_investments.loc[(country, country), range(2001,2005)] = row
+        
+        return domestic_investments
