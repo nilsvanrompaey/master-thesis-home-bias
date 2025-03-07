@@ -14,7 +14,7 @@ from data.manager import *
 from utils import *
 from adjustText import adjust_text
 
-def scatter_countries(x, y, codes, x_label, y_label, title, save=None):
+def scatter_countries(x, y, codes, x_label, y_label, title, save=None, riskfree=None):
     # Perform OLS regression
     X = sm.add_constant(x)
     y = y
@@ -41,7 +41,11 @@ def scatter_countries(x, y, codes, x_label, y_label, title, save=None):
     # Plot regression line and do layout
     x_min, x_max = x.min(), x.max()     
     y_min, y_max = y_pred.iloc[x.argmin()], y_pred.iloc[x.argmax()]
-    plt.plot([x_min, x_max], [y_min, y_max], color='red', linewidth=2, label='Regression line')
+    plt.plot([0, x_max], [model.params["const"], y_max], color='red', linewidth=2, linestyle="dotted", label='Regression line')
+    if riskfree is not None:
+        plt.plot([0, x_max], [riskfree, riskfree+3*x_max], color='green', linewidth=2, linestyle="dashed", label='RRA = 3')
+        plt.ylim(top=y.max()*1.05)
+    plt.xlim(left=0)
     plt.legend()
     plt.xlabel(x_label)
     plt.ylabel(y_label)
