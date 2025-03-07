@@ -40,7 +40,7 @@ def scatter_countries(x, y, codes, x_label, y_label, title, save=None):
 
     # Plot regression line and do layout
     x_min, x_max = x.min(), x.max()     
-    y_min, y_max = y_pred[x.argmin()], y_pred[x.argmax()]
+    y_min, y_max = y_pred.iloc[x.argmin()], y_pred.iloc[x.argmax()]
     plt.plot([x_min, x_max], [y_min, y_max], color='red', linewidth=2, label='Regression line')
     plt.legend()
     plt.xlabel(x_label)

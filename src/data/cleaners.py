@@ -38,16 +38,23 @@ def clean_ds(data):
     Returns:
         pd.DataFrame: Cleaned DS data
     """
-    data = data.copy()
+
+    # Filtering (Keeping only last entry of each month) and renaming columns
     data.columns = pd.to_datetime(data.columns)
+    data = data.loc[:, data.columns.to_series().groupby(data.columns.to_series().dt.to_period("M")).last()]
+    data.columns = data.columns.to_period("M").end_time.date
+    data.columns = pd.to_datetime(data.columns)
+
+    # Filtering and renaming indices
     data.index = [index.split('-')[0] for index in data.index]
     data = data.loc[DS.COUNTRIES]
     data.index = [DS.COUNTRY_TO_CODE[index] for index in data.index]
 
-    # Keep only the last day of each month
-    data = data.loc[:, data.columns.to_series().groupby(data.columns.to_series().dt.to_period("M")).last()]
-    data.columns = data.columns.to_period("M").end_time.date
-    data.columns = pd.to_datetime(data.columns)
+    # Replacing data for Indonesia
+    for date, value in DS.ID_MODIFICATIONS.items():
+        date =  pd.to_datetime(date, dayfirst=True).to_period("M").to_timestamp("M")
+        data.loc["ID", date] = value
+
     return data
 
 def clean_fed(data):

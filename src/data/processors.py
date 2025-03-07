@@ -1,6 +1,7 @@
 import pandas as pd
+import numpy as np
 
-from utils.constants import CPIS
+from utils import *
 
 class DataFrameCPIS(pd.DataFrame):
     @property
@@ -67,3 +68,78 @@ class DataFrameCPIS(pd.DataFrame):
             domestic_investments.loc[(country, country), range(2001,2005)] = row.to_numpy()
         
         return domestic_investments
+    
+    def calculate_weight_matrix(self, wb, sample_period):
+        
+        # Get size of country j's index in country i's portfolio
+        offshore = [CPIS.COUNTRY_TO_CODE[country] for country in CPIS.OFFSHORE_CENTERS]
+        sample = DS.CODES.copy()
+        offshore_weights = self.calculate_offshore_weights(DS.CODES.copy(), offshore)
+        offshore_investments = self.calculate_offshore_investments(DS.CODES.copy(), offshore)
+        offshore_distribution = self.distribute_offshore_holdings(offshore_investments, offshore_weights)  
+        domestic_investments = self.calculate_domestic_investments(DS.CODES.copy(), wb)
+        size_of_index_in_portfolio = (self + offshore_distribution + domestic_investments).get_data(issuers=sample, holders=sample)
+        
+        # Get total size of country i's portfolio
+        total_portfolio_size = size_of_index_in_portfolio.groupby("Country Name").sum()
+
+        # Get weights of country j's index in country i's portfolio
+        weights = size_of_index_in_portfolio / total_portfolio_size
+        start, end = sample_period
+        weights = weights.get_data(holders=DS.CODES.copy(), periods=range(start, end+1)).mean(axis=1)
+        
+        return weights.unstack().T.to_numpy()
+        
+    
+    def calculate_excess_returns_matrix(self, fed, ds, sample_period, log):
+        
+        # Get time series data [NxT] and filter sample countries and period
+        start, end = sample_period
+        ds = ds.loc[:, (ds.columns >= pd.Timestamp(f"{start-1}-12-01")) & (ds.columns <= pd.Timestamp(f"{end+1}-01-01"))]
+        ds = ds.rename(columns=DS.COUNTRY_TO_CODE, index=DS.COUNTRY_TO_CODE)
+        ds_filled = ds.ffill(axis=1)
+        returns = ds_filled.pct_change(axis=1)
+
+        # Riskfree rate
+        fed = fed.reindex(columns=ds.columns)
+        fed = annual_to_monthly_return(fed)
+        risk_free_rate = fed.loc["FEDFUNDS"]
+
+        # Convert prices to (log) returns
+        if log: 
+            log_returns = np.log(1 + returns)
+            log_risk_free = np.log(1 + risk_free_rate)
+            excess_returns = log_returns.subtract(log_risk_free, axis=1)
+        else:
+            excess_returns = returns.subtract(risk_free_rate, axis=1)
+
+        return excess_returns.iloc[:, 1:]
+
+
+    def calculate_cov_matrix_returns(self, fed, ds, sample_period, log):
+        # Get returns matrix [NxT]
+        X = self.calculate_excess_returns_matrix(fed, ds, sample_period, log)
+        
+        # Return covariance matrix of returns [NxN]
+        return np.cov(X)
+    
+    def calculate_cov_index_portfolio(self, wb, fed, ds, sample_period, log):
+        
+        # Get weight matrix [NxN]
+        W = self.calculate_weight_matrix(wb, sample_period)
+
+        # Get covariance matrix of returns [NxN]
+        K = self.calculate_cov_matrix_returns(fed, ds, sample_period, log)
+
+        # Return vector of covariances between country i's portfolio and its index [1xN]
+        return np.diag(np.dot(W.T, K))
+    
+
+class DataFrameDS(pd.DataFrame):
+    @property
+    def _constructor(self):
+        return DataFrameCPIS
+    
+    def get_data(self, countries="all", periods="all"):
+        
+        return
