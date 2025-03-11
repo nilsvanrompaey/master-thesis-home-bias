@@ -2,18 +2,18 @@
 ==============================================================================
 Dep. Variable:                      y   R-squared:                       0.024
 Model:                            OLS   Adj. R-squared:                 -0.005
-Method:                 Least Squares   F-statistic:                    0.8336
-Date:                Fri, 07 Mar 2025   Prob (F-statistic):              0.368
-Time:                        22:13:00   Log-Likelihood:                 122.22
+Method:                 Least Squares   F-statistic:                     1.436
+Date:                Tue, 11 Mar 2025   Prob (F-statistic):              0.239
+Time:                        20:58:30   Log-Likelihood:                 122.22
 No. Observations:                  36   AIC:                            -240.4
 Df Residuals:                      34   BIC:                            -237.3
 Df Model:                           1                                         
-Covariance Type:            nonrobust                                         
+Covariance Type:                  HAC                                         
 ==============================================================================
-                 coef    std err          t      P>|t|      [0.025      0.975]
+                 coef    std err          z      P>|z|      [0.025      0.975]
 ------------------------------------------------------------------------------
-const          0.0088      0.002      4.378      0.000       0.005       0.013
-0             -0.2243      0.246     -0.913      0.368      -0.724       0.275
+const          0.0088      0.002      4.949      0.000       0.005       0.012
+0             -0.2243      0.187     -1.198      0.231      -0.591       0.143
 ==============================================================================
 Omnibus:                        2.209   Durbin-Watson:                   1.754
 Prob(Omnibus):                  0.331   Jarque-Bera (JB):                2.024
@@ -22,4 +22,4 @@ Kurtosis:                       2.593   Cond. No.                         177.
 ==============================================================================
 
 Notes:
-[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 4 lags and without small sample correction
