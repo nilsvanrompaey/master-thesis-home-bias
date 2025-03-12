@@ -15,10 +15,15 @@ from utils import *
 from adjustText import adjust_text
 
 def scatter_countries(ax, x, y, codes, x_label=None, y_label=None, title=None, save=None, riskfree=None):
+    
+    # Filter data using codes
+    x = x.loc[codes]
+    y = y.loc[codes]
+    
     # Perform OLS regression
     X = sm.add_constant(x)
-    model = sm.OLS(y, X).fit(cov_type="HAC", cov_kwds={"maxlags": 4})
-    # model = sm.OLS(y, X).fit()
+    model = sm.OLS(y, X).fit(cov_type="HAC", cov_kwds={"maxlags": 4}) # Newey-West with 4 lags 
+    # model = sm.OLS(y, X).fit() # Regular regression
     y_pred = model.predict(X)
     
     

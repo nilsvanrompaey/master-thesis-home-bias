@@ -44,54 +44,62 @@ mean_log_excess = log_excess_returns.mean(axis=1)
 var_log_excess = log_excess_returns.var(axis=1)
 cov_log_excess = pd.Series(cpis.calculate_cov_index_portfolio(wb, fed_monthly, ds, (start, end), True), index=DS.CODES)
 
+def run_figure1(codes, save_name):
 
-fig, axes = plt.subplots(1, 2, figsize=(10, 6))
-scatter_countries(ax=axes[0],
-                  x=var_excess,
-                  y=mean_excess,
-                  codes=DS.CODES,
-                  x_label="Variance of excess returns",
-                  y_label="Mean excess return",
-                #   title="Monthly excess returns (USD)",
-                  save="exp1/results/fig1a",
-                  riskfree=avg_riskfree_rate,
-                  )
-scatter_countries(ax=axes[1],
-                  x=cov_excess,
-                  y=mean_excess,
-                  codes=DS.CODES,
-                  x_label="Covariance between excess returns of index and portfolio",
-                  y_label="Mean excess return",
-                #   title="Monthly excess returns (USD)",
-                  save="exp1/results/fig1b",           
-                  riskfree=avg_riskfree_rate,
-                  )
-plt.suptitle("Monthly excess returns 2001-2004 (USD)")
-plt.tight_layout()
-plt.savefig("./output/exp1/figures/fig1.png", dpi=600)
+	fig, axes = plt.subplots(1, 2, figsize=(10, 6))
+	scatter_countries(ax=axes[0],
+					x=var_excess,
+					y=mean_excess,
+					codes=codes,
+					x_label="Variance of excess returns",
+					y_label="Mean excess return",
+					#   title="Monthly excess returns (USD)",
+					save=f"exp1/results/fig1a{save_name}",
+					riskfree=avg_riskfree_rate,
+					)
+	scatter_countries(ax=axes[1],
+					x=cov_excess,
+					y=mean_excess,
+					codes=codes,
+					x_label="Covariance between excess returns of index and portfolio",
+					y_label="Mean excess return",
+					#   title="Monthly excess returns (USD)",
+					save=f"exp1/results/fig1b{save_name}",           
+					riskfree=avg_riskfree_rate,
+					)
+	plt.suptitle("Monthly excess returns 2001-2004 (USD)")
+	plt.tight_layout()
+	plt.savefig(f"./output/exp1/figures/fig1{save_name}.png", dpi=600)
 
-plt.close('all')
-fig_log, axes_log = plt.subplots(1, 2, figsize=(10, 6))
-scatter_countries(ax=axes_log[0],
-                  x=var_log_excess,
-                  y=mean_log_excess,
-                  codes=DS.CODES,
-                  x_label="Variance of log excess returns",
-                  y_label="Mean log excess return",
-                #   title="Monthly log excess returns (USD)",
-                  save="exp1/results/fig1a_log",
-                  riskfree=avg_riskfree_rate,
-                  )
-scatter_countries(ax=axes_log[1],
-                  x=cov_log_excess,
-                  y=mean_log_excess,
-                  codes=DS.CODES,
-                  x_label="Covariance between log excess returns of \n country's index and country's portfolio",
-                  y_label="Mean log excess return",
-                #   title="Monthly log excess returns (USD)",
-                  save="exp1/results/fig1b_log",
-                  riskfree=avg_riskfree_rate,
-                  )
-plt.suptitle("Monthly excess log returns 2001-2004 (USD)")
-plt.tight_layout()
-plt.savefig("./output/exp1/figures/fig1_log.png", dpi=600)
+	plt.close('all')
+	fig_log, axes_log = plt.subplots(1, 2, figsize=(10, 6))
+	scatter_countries(ax=axes_log[0],
+					x=var_log_excess,
+					y=mean_log_excess,
+					codes=codes,
+					x_label="Variance of log excess returns",
+					y_label="Mean log excess return",
+					#   title="Monthly log excess returns (USD)",
+					save=f"exp1/results/fig1a_log{save_name}",
+					riskfree=avg_riskfree_rate,
+					)
+	scatter_countries(ax=axes_log[1],
+					x=cov_log_excess,
+					y=mean_log_excess,
+					codes=codes,
+					x_label="Covariance between log excess returns of \n country's index and country's portfolio",
+					y_label="Mean log excess return",
+					#   title="Monthly log excess returns (USD)",
+					save=f"exp1/results/fig1b_log{save_name}",
+					riskfree=avg_riskfree_rate,
+					)
+	plt.suptitle("Monthly excess log returns 2001-2004 (USD)")
+	plt.tight_layout()
+	plt.savefig(f"./output/exp1/figures/fig1_log{save_name}.png", dpi=600)
+
+
+if __name__ == "__main__":
+	# run_figure1(codes=DS.CODES, save_name="")
+	
+	CODES_EX_TR = [code for code in DS.CODES if code != "TR"]
+	run_figure1(codes=CODES_EX_TR, save_name="_exTR")
