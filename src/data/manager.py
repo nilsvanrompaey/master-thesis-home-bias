@@ -34,7 +34,7 @@ class DataManager:
         raw_data = {
             "cpis": import_cpis(self.raw_dir + "/CPIS.csv"),
             "ds": import_ds(self.raw_dir + "/DS.xlsx"),
-            "fed": import_fed(self.raw_dir + "/FED.xlsx"),
+            "fed": import_fed(self.raw_dir + "/RISKFREE.xlsx"),
             "wb": import_wb(self.raw_dir + "/WB.xlsx"),
             "wfe": import_wfe(self.raw_dir + "/WFE.xlsx"),   
         }

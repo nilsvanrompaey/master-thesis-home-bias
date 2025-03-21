@@ -46,7 +46,7 @@ cov_log_excess = pd.Series(cpis.calculate_cov_index_portfolio(wb, fed_monthly, d
 
 def run_figure1(codes, save_name):
 
-	fig, axes = plt.subplots(1, 2, figsize=(10, 6))
+	fig, axes = plt.subplots(1, 2, figsize=(10, 4))
 	scatter_countries(ax=axes[0],
 					x=var_excess,
 					y=mean_excess,
@@ -72,7 +72,7 @@ def run_figure1(codes, save_name):
 	plt.savefig(f"./output/exp1/figures/fig1{save_name}.png", dpi=600)
 
 	plt.close('all')
-	fig_log, axes_log = plt.subplots(1, 2, figsize=(10, 6))
+	fig_log, axes_log = plt.subplots(1, 2, figsize=(10, 4))
 	scatter_countries(ax=axes_log[0],
 					x=var_log_excess,
 					y=mean_log_excess,
@@ -99,7 +99,7 @@ def run_figure1(codes, save_name):
 
 
 if __name__ == "__main__":
-	# run_figure1(codes=DS.CODES, save_name="")
+	run_figure1(codes=DS.CODES, save_name="")
 	
 	CODES_EX_TR = [code for code in DS.CODES if code != "TR"]
 	run_figure1(codes=CODES_EX_TR, save_name="_exTR")

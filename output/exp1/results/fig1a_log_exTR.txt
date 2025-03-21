@@ -3,8 +3,8 @@
 Dep. Variable:                      y   R-squared:                       0.050
 Model:                            OLS   Adj. R-squared:                  0.022
 Method:                 Least Squares   F-statistic:                     1.812
-Date:                Tue, 11 Mar 2025   Prob (F-statistic):              0.187
-Time:                        21:12:53   Log-Likelihood:                 118.88
+Date:                Wed, 12 Mar 2025   Prob (F-statistic):              0.187
+Time:                        14:55:53   Log-Likelihood:                 118.88
 No. Observations:                  35   AIC:                            -233.8
 Df Residuals:                      33   BIC:                            -230.7
 Df Model:                           1                                         

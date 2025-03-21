@@ -66,7 +66,7 @@ def scatter_countries(ax, x, y, codes, x_label=None, y_label=None, title=None, s
     return ax
 
 
-def plot_returns(ds, fed, period, code, log):
+def plot_returns(ds, fed, period, code, log, kind="bar"):
 
     country = DS.CODE_TO_COUNTRY[code]
     start, end = period
@@ -85,11 +85,12 @@ def plot_returns(ds, fed, period, code, log):
         log_excess_returns = log_returns.subtract(log_risk_free, axis=0)
         excess_returns = log_excess_returns
 
-    ax = excess_returns.plot(kind="bar", legend=False)
+    ax = excess_returns.plot(kind=kind, legend=False)
     datetime_index = pd.to_datetime(excess_returns.index)
     ax.set_xticklabels([dt.strftime('%b %Y') for dt in datetime_index])
     ax.xaxis.set_major_locator(plt.MaxNLocator(8))
-    plt.title(f"Monthly excess return (USD), {country}, {start}-{end}")
+    log_text = "log " if log else ""
+    plt.title(f"Monthly excess {log_text}return (USD), {country}, {start}-{end}")
     plt.xlabel("Month")
     plt.ylabel("Excess return")
     text_x = 0.7 * len(excess_returns)  # X position (75% of the way across the graph)
