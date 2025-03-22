@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import numpy as np
-from data.manager import *
+from data_handling.manager import *
 from utils import *
 from adjustText import adjust_text
 from plot.plot import scatter_countries

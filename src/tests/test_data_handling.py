@@ -4,7 +4,7 @@
 import numpy as np
 
 # Local Module Imports
-from data import *
+from data_handling import *
 
 class TestDataHandling():
     def __init__(self):
@@ -26,7 +26,7 @@ class TestDataHandling():
         data_raw = DataManager(raw_dir = "./data/raw",
                                 save_dir = "./data/clean")
 
-        data_raw.clean_and_save_data()
+        data_raw.process_and_save_data()
         assert data_raw.get_dataset("cpis").equals(self.cpis), "cpis issue"
         assert data_raw.get_dataset("wfe").equals(self.wfe), "wfe issue"
         assert data_raw.get_dataset("ds").equals(self.ds), "ds issue"
