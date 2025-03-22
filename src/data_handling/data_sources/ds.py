@@ -13,7 +13,15 @@ class DSDataSource(DataSource):
         return self.data
     
     def clean_data(self):
-        """Clean DS data and format dates."""
+        """Clean DS self.data and format dates.
+    
+        Args:
+            self.data (pd.DataFrame): Raw DS data from import_ds
+            
+        Returns:
+            pd.DataFrame: Cleaned DS data
+        """
+
         # Filtering (Keeping only last entry of each month) and renaming columns
         self.data.columns = pd.to_datetime(self.data.columns)
         self.data = self.data.loc[:, self.data.columns.to_series().groupby(self.data.columns.to_series().dt.to_period("M")).last()]
@@ -25,9 +33,9 @@ class DSDataSource(DataSource):
         self.data = self.data.loc[DS.COUNTRIES]
         self.data.index = [DS.COUNTRY_TO_CODE[index] for index in self.data.index]
 
-        # Replacing data for Indonesia
+        # Replacing self.data for Indonesia
         for date, value in DS.ID_MODIFICATIONS.items():
-            date = pd.to_datetime(date, dayfirst=True).to_period("M").to_timestamp("M")
+            date =  pd.to_datetime(date, dayfirst=True).to_period("M").to_timestamp("M")
             self.data.loc["ID", date] = value
 
         return self.data

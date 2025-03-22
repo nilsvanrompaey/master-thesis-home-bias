@@ -1,7 +1,7 @@
 """Main data manager class to orchestrate all data sources."""
 
 import os
-from .data_sources import CPISDataSource, DSDataSource, FEDDataSource, WFEDataSource, WBDataSource
+from .data_sources import CPISDataSource, DSDataSource, FEDDataSource, WFEDataSource, WBDataSource, GDPDataSource
 
 class DataManager:
     """Manages all data sources and orchestrates the data pipeline."""
@@ -24,14 +24,17 @@ class DataManager:
             "fed": FEDDataSource(os.path.join(raw_dir, "RISKFREE.xlsx")),
             "wb": WBDataSource(os.path.join(raw_dir, "WB.xlsx")),
             "wfe": WFEDataSource(os.path.join(raw_dir, "WFE.xlsx")),
+            "gdp": GDPDataSource(os.path.join(raw_dir, "GDP.xlsx"))
         }
         
         # Load or process data
-        try:
-            self.load_data()
-        except Exception:
-            self.process_and_save_data()
-            self.load_data()
+        # try:
+        #     self.load_data()
+        # except Exception:
+        #     self.process_and_save_data()
+        #     self.load_data()
+        self.process_and_save_data()
+        self.load_data()
     
     def process_and_save_data(self):
         """Import, clean, and save all datasets."""
