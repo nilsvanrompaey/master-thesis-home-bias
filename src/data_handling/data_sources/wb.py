@@ -19,6 +19,7 @@ class WBDataSource(DataSource):
         self.data = self.data.rename_axis("Country Code")
         self.data = self.data.apply(pd.to_numeric, errors='coerce')  
         self.data.columns = range(1999, 2024)
+        self.data.index.name = "Country"
 
         for country, country_data in WFE.WFE_MODIFICATIONS.items():
             for year, value in country_data.items():

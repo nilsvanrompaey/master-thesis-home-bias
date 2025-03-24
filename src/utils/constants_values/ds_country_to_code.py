@@ -34,7 +34,7 @@ DS_COUNTRY_TO_CODE = {
     "SWITZ": "CH",
     "THAILAND": "TH",
     "TURKEY": "TR",
-    # "UK": "GB",
+    "UK": "GB",
     "US": "US",
     "VENEZUELA": "VE"
 }

@@ -22,7 +22,7 @@ class CPISDataFrame(pd.DataFrame):
             for i, holder in enumerate(holders):
                 if len(holder) != 2:
                     holders[i] = CPIS.COUNTRY_TO_CODE[holder]
-            assert all(holder in self.index.get_level_values("Country Name") for holder in holders), "Holding country does not exist"
+            assert all(holder in self.index.get_level_values("Country") for holder in holders), "Holding country does not exist"
             
         issuers = slice(None) if issuers == "all" else issuers
         if issuers != slice(None):
@@ -30,7 +30,7 @@ class CPISDataFrame(pd.DataFrame):
             for i, issuer in enumerate(issuers):
                 if len(issuer) != 2:
                     issuers[i] = CPIS.COUNTRY_TO_CODE[issuer]
-            assert all(issuer in self.index.get_level_values("Counterpart Country Name") for issuer in issuers), "Issuer country does not exist"
+            assert all(issuer in self.index.get_level_values("Counterpart Country") for issuer in issuers), "Issuer country does not exist"
             
         periods = slice(None) if periods == "all" else periods
         if periods != slice(None):
@@ -47,7 +47,7 @@ class CPISDataFrame(pd.DataFrame):
     def calculate_offshore_weights(self, sample, offshore):
         """Calculate offshore weights for a sample of countries."""
         offshore_in_sample = self.get_data(issuers=sample, holders=offshore)
-        offshore_in_sample_sum = offshore_in_sample.groupby(level='Country Name').sum()
+        offshore_in_sample_sum = offshore_in_sample.groupby(level='Country').sum()
         offshore_weights = (offshore_in_sample / offshore_in_sample_sum)
         return offshore_weights
 
@@ -55,9 +55,9 @@ class CPISDataFrame(pd.DataFrame):
         """Distribute offshore holdings based on investments and weights."""
         offshore_distribution = CPISDataFrame(0.0, index=self.index, columns=self.columns)
         for year in offshore_investments.columns:
-            investments = offshore_investments.loc[:, year].unstack(level='Counterpart Country Name')
-            weights = offshore_weights.loc[:, year].unstack(level='Counterpart Country Name').fillna(0)
-            distribution = investments.dot(weights).stack(level="Counterpart Country Name")
+            investments = offshore_investments.loc[:, year].unstack(level='Counterpart Country')
+            weights = offshore_weights.loc[:, year].unstack(level='Counterpart Country').fillna(0)
+            distribution = investments.dot(weights).stack(level="Counterpart Country")
             offshore_distribution[year] = distribution
             
         offshore_distribution.fillna(0, inplace=True)
@@ -66,9 +66,9 @@ class CPISDataFrame(pd.DataFrame):
     def calculate_domestic_investments(self, sample_codes, wb):
         """Calculate domestic investments for a sample of countries."""
         total_market_cap = wb.loc[sample_codes, range(2001, 2005)]
-        total_in_sample = self.get_data(issuers=sample_codes, holders="World", periods=range(2001, 2005)).groupby("Counterpart Country Name").sum()
+        total_in_sample = self.get_data(issuers=sample_codes, holders="World", periods=range(2001, 2005)).groupby("Counterpart Country").sum()
         
-        total_in_sample.rename_axis("Country Code", inplace=True)
+        total_in_sample.rename_axis("Country", inplace=True)
         domestic_investments_temp = total_market_cap - total_in_sample
         domestic_investments = CPISDataFrame(0.0, index=self.index, columns=self.columns)
         for country, row in domestic_investments_temp.iterrows():
@@ -109,7 +109,7 @@ class CPISDataFrame(pd.DataFrame):
         # Riskfree rate
         fed = fed.reindex(columns=ds.columns)
         fed = annual_to_monthly_return(fed)
-        risk_free_rate = fed.loc["FEDFUNDS"]
+        risk_free_rate = fed.loc["DTB3"]
 
         # Convert prices to (log) returns
         if log: 
@@ -148,7 +148,7 @@ class CPISDataSource(DataSource):
 
     def import_data(self):
         """Import CPIS data from CSV file."""
-        self.data = pd.read_csv(self.file_path)
+        self.data = pd.read_csv(self.file_path, low_memory=False)
         return self.data
         
     def clean_data(self):
@@ -167,7 +167,8 @@ class CPISDataSource(DataSource):
         self.data = self.data.reindex(pairs, axis=0, fill_value=0)
         self.data = self.data.rename(index=CPIS.COUNTRY_TO_CODE)
         self.data = self.data.sort_index()
-        
+        self.data.index.names = ["Country", "Counterpart Country"]
+
         # Convert to specialized CPIS DataFrame
         return self.data
 

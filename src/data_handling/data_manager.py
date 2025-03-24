@@ -21,27 +21,26 @@ class DataManager:
         self.sources = {
             "cpis": CPISDataSource(os.path.join(raw_dir, "CPIS.csv")),
             "ds": DSDataSource(os.path.join(raw_dir, "DS.xlsx")),
-            "fed": FEDDataSource(os.path.join(raw_dir, "RISKFREE.xlsx")),
+            "fed": FEDDataSource(os.path.join(raw_dir, "DTB3.xlsx")),
             "wb": WBDataSource(os.path.join(raw_dir, "WB.xlsx")),
             "wfe": WFEDataSource(os.path.join(raw_dir, "WFE.xlsx")),
             "gdp": GDPDataSource(os.path.join(raw_dir, "GDP.xlsx"))
         }
         
-        # Load or process data
-        # try:
-        #     self.load_data()
-        # except Exception:
-        #     self.process_and_save_data()
-        #     self.load_data()
-        self.process_and_save_data()
-        self.load_data()
+        #Load or process data
+        try:
+            self.load_data()
+        except Exception:
+            self.clean_and_save_data()
+
     
-    def process_and_save_data(self):
+    def clean_and_save_data(self):
         """Import, clean, and save all datasets."""
         for name, source in self.sources.items():
             source.import_data()
             source.clean_data()
             source.save_data(self.save_dir, name)
+        self.load_data()
     
     def load_data(self):
         """Load all saved datasets."""

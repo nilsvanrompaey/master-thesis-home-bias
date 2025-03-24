@@ -32,6 +32,7 @@ class DSDataSource(DataSource):
         self.data.index = [index.split('-')[0] for index in self.data.index]
         self.data = self.data.loc[DS.COUNTRIES]
         self.data.index = [DS.COUNTRY_TO_CODE[index] for index in self.data.index]
+        self.data.index.name = "Country"
 
         # Replacing self.data for Indonesia
         for date, value in DS.ID_MODIFICATIONS.items():
