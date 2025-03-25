@@ -7,12 +7,12 @@ from .base import DataSource
 class DSDataSource(DataSource):
     """DS data source implementation."""
     
-    def import_data(self):
+    def import_raw_data(self):
         """Import DS data from Excel file."""
-        self.data = pd.read_excel(self.file_path, sheet_name=0, index_col=0)
-        return self.data
+        self.raw = pd.read_excel(self.file_path, sheet_name=0, index_col=0)
+        return self.raw
     
-    def clean_data(self):
+    def clean_raw_data(self):
         """Clean DS self.data and format dates.
     
         Args:
@@ -21,6 +21,8 @@ class DSDataSource(DataSource):
         Returns:
             pd.DataFrame: Cleaned DS data
         """
+        
+        self.data = self.raw
 
         # Filtering (Keeping only last entry of each month) and renaming columns
         self.data.columns = pd.to_datetime(self.data.columns)
@@ -40,3 +42,14 @@ class DSDataSource(DataSource):
             self.data.loc["ID", date] = value
 
         return self.data
+
+    def filter_countries(self, countries):
+        self.data = self.data.reindex(countries, axis=0, fill_value=0)
+        self.data = self.data.sort_index()
+        return self.data
+
+    def filter_period(self, period):
+        start, end = period
+        self.data = self.data.loc[:, [year in range(2010,2014) for year in self.data.columns.year]]
+        return self.data
+

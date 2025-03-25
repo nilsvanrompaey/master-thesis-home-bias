@@ -27,20 +27,20 @@ class DataManager:
             "gdp": GDPDataSource(os.path.join(raw_dir, "GDP.xlsx"))
         }
         
-        #Load or process data
-        try:
-            self.load_data()
-        except Exception:
-            self.clean_and_save_data()
-
-    
-    def clean_and_save_data(self):
-        """Import, clean, and save all datasets."""
-        for name, source in self.sources.items():
-            source.import_data()
-            source.clean_data()
-            source.save_data(self.save_dir, name)
+        # Load the cleaned data (from parquet files)    
         self.load_data()
+        
+    
+    def clean_data(self):
+        """Import and clean all datasets."""
+        for name, source in self.sources.items():
+            source.import_raw_data()
+            source.clean_raw_data()
+
+    def save_data(self):
+        """Save all loaded datasets."""
+        for name, source in self.sources.items():
+            source.save_data(self.save_dir, name)
     
     def load_data(self):
         """Load all saved datasets."""
@@ -48,14 +48,14 @@ class DataManager:
             source.load_data(self.save_dir, name)
     
     def get_dataset(self, name):
-        """Retrieve a dataset.
-        
-        Args:
-            name (str): Name of the dataset to retrieve
-            
-        Returns:
-            object: The requested dataset or None if not found
-        """
+        """Retrieve a dataset."""
         if name in self.sources:
             return self.sources[name].data
-        return None
+        return None        
+
+    def filter_data(self, countries, period):
+        for name in self.sources:
+            self.sources[name].filter_data(countries, period)
+
+    def figure1():
+        pass

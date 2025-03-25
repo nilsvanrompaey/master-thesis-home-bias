@@ -19,12 +19,12 @@ class DataSource(ABC):
         self.data = None
     
     @abstractmethod
-    def import_data(self):
+    def import_raw_data(self):
         """Import raw data from source file."""
         pass
     
     @abstractmethod
-    def clean_data(self):
+    def clean_raw_data(self):
         """Clean and process the raw data."""
         pass
     
@@ -48,3 +48,17 @@ class DataSource(ABC):
         data = pd.read_parquet(os.path.join(save_path, f"{filename}.parquet"))
         self.data = self.dataframe_class(data)
         return self.data
+    
+    def filter_data(self, countries=None, period=None):
+        if countries is not None:
+            self.filter_countries(countries)
+        if period is not None:
+            self.filter_period(period)
+        
+    @abstractmethod
+    def filter_countries(self, countries):
+        pass
+
+    @abstractmethod
+    def filter_period(self, period):
+        pass

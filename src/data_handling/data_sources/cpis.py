@@ -146,19 +146,23 @@ class CPISDataSource(DataSource):
     
     dataframe_class = CPISDataFrame
 
-    def import_data(self):
+    def import_raw_data(self):
         """Import CPIS data from CSV file."""
-        self.data = pd.read_csv(self.file_path, low_memory=False)
-        return self.data
+        self.raw = pd.read_csv(self.file_path, low_memory=False)
+        return self.raw
         
-    def clean_data(self):
+    def clean_raw_data(self):
         """Clean CPIS data and organize by country."""
+        
+        self.data = self.raw
+
         # Setting indices, removing duplicate indices and filling NaN
         self.data = self.data.set_index(["Country Name", "Counterpart Country Name"])
-        self.data = self.data.groupby(["Country Name", "Counterpart Country Name"]).sum()
+        self.data = self.data.rename_axis(["Country", "Counterpart Country"])
+        self.data = self.data.groupby(["Country", "Counterpart Country"]).sum()
         self.data = self.data.apply(pd.to_numeric, errors='coerce').fillna(0)
 
-        # Filtering and renaming columns
+        # Filtering (remove half-yearly, retain yearly) and renaming columns
         self.data = self.data[list(CPIS.COLUMN_HEADERS.keys())]
         self.data = self.data.rename(columns=CPIS.COLUMN_HEADERS)
 
@@ -167,9 +171,17 @@ class CPISDataSource(DataSource):
         self.data = self.data.reindex(pairs, axis=0, fill_value=0)
         self.data = self.data.rename(index=CPIS.COUNTRY_TO_CODE)
         self.data = self.data.sort_index()
-        self.data.index.names = ["Country", "Counterpart Country"]
 
-        # Convert to specialized CPIS DataFrame
         return self.data
 
+    def filter_countries(self, countries):
+        pairs = [(holder, issuer) for holder in countries for issuer in countries]
+        self.data = self.data.reindex(pairs, axis=0, fill_value=0)
+        self.data = self.data.sort_index()
+        return self.data
+
+    def filter_period(self, period):
+        start, end = period
+        self.data = self.data[range(start, end+1)]
+        return self.data
 
