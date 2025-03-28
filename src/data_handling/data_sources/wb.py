@@ -4,9 +4,37 @@ import pandas as pd
 from utils.constants import WB, WFE
 from .base import DataSource
 
+class WBDataFrame(pd.DataFrame):
+    """Specialized DataFrame for CPIS data with additional methods."""
+    
+    @property
+    def _constructor(self):
+        return WBDataFrame
+
+    def get_data(self, countries="all", periods="all"):
+        """Get data for specific holders, issuers, and time periods."""
+        # Validate and set default parameters
+        countries = slice(None) if countries == "all" else countries
+        if countries != slice(None):
+            countries = [countries] if isinstance(countries, str) else countries
+            for i, holder in enumerate(countries):
+                if len(holder) != 2:
+                    countries[i] = WB.CODES_3_TO_2[holder]
+            assert all(holder in self.index.get_level_values("Country") for country in countries), "Holding country does not exist"
+            
+        periods = slice(None) if periods == "all" else periods
+        if periods != slice(None):
+            periods = [periods] if isinstance(periods, int) else periods
+            assert all(period in self.columns for period in periods), "Period does not exist"  
+
+        return self.loc[countries, periods]
+    
+
 class WBDataSource(DataSource):
     """WB data source implementation."""
     
+    dataframe_class = WBDataFrame
+
     def import_raw_data(self):
         """Import WB data from Excel file."""
         self.raw = pd.read_excel(self.file_path, sheet_name=0, usecols="A:AC", index_col=1)

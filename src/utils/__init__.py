@@ -1,6 +1,6 @@
 from .helper import annual_to_monthly_return, monthly_to_annual_return, compute_monthly_compounded_excess_return
 from .helper import calculate_yearly_returns, calculate_home_bias, neumann_series
-from .constants import DS, WFE, CPIS, WB
+from .constants import DS, WFE, CPIS, WB, COUNTRIES
 
 __all__ = [
     
@@ -9,5 +9,5 @@ __all__ = [
     "calculate_yearly_returns", "calculate_home_bias", "neumann_series",
 
     # Static variables
-    "DS", "WFE", "CPIS", "WB",
+    "DS", "WFE", "CPIS", "WB", "COUNTRIES"
 ]
