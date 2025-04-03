@@ -6,21 +6,21 @@ import pandas as pd
 from utils import *
 from .base import DataSource
 
-class GDPDataFrame(pd.DataFrame):
+class GDPPCDataFrame(pd.DataFrame):
     """Specialized DataFrame for CPIS data with additional methods."""
     
     @property
     def _constructor(self):
-        return GDPDataFrame
+        return GDPPCDataFrame
 
-class GDPDataSource(DataSource):
+class GDPPCDataSource(DataSource):
     """CPIS data source implementation."""
     
-    dataframe_class = GDPDataFrame
+    dataframe_class = GDPPCDataFrame
 
     def import_raw_data(self):
         """Import GDP data from excel file."""
-        self.raw = pd.read_excel(self.file_path, index_col=1, sheet_name=0)
+        self.raw = pd.read_excel(self.file_path, index_col=1, sheet_name=1)
         return self.raw
         
     def clean_raw_data(self):

@@ -1,7 +1,7 @@
 """Main data manager class to orchestrate all data sources."""
 
 import os
-from .data_sources import CPISDataSource, DSDataSource, FEDDataSource, WFEDataSource, WBDataSource, GDPDataSource
+from .data_sources import CPISDataSource, DSDataSource, FEDDataSource, WFEDataSource, WBDataSource, GDPDataSource, GDPPCDataSource
 
 class DataManager:
     """Manages all data sources and orchestrates the data pipeline."""
@@ -24,18 +24,23 @@ class DataManager:
             "fed": FEDDataSource(os.path.join(raw_dir, "DTB3.xlsx")),
             "wb": WBDataSource(os.path.join(raw_dir, "WB.xlsx")),
             "wfe": WFEDataSource(os.path.join(raw_dir, "WFE.xlsx")),
-            "gdp": GDPDataSource(os.path.join(raw_dir, "GDP.xlsx"))
+            "gdp": GDPDataSource(os.path.join(raw_dir, "GDP.xlsx")),
+            "gdppc": GDPPCDataSource(os.path.join(raw_dir, "GDP.xlsx")),
         }
         
         # Load the cleaned data (from parquet files)    
-        self.load_data()
-        
+        try:
+            self.load_data()
+        except Exception:
+            self.clean_data()
+            self.save_data()
     
     def clean_data(self):
         """Import and clean all datasets."""
         for name, source in self.sources.items():
             source.import_raw_data()
             source.clean_raw_data()
+        self.load_data()
 
     def save_data(self):
         """Save all loaded datasets."""
