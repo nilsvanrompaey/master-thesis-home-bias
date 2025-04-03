@@ -28,5 +28,5 @@ class FEDDataSource(DataSource):
 
     def filter_period(self, period):
         start, end = period
-        self.data = self.data.loc[:, [year in range(2010,2014) for year in self.data.columns.year]]
+        self.data = self.data.loc[:, [year in range(start,end+1) for year in self.data.columns.year]]
         return self.data

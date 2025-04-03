@@ -15,9 +15,7 @@ def scatter_countries(ax, x, y, codes, x_label=None, y_label=None, title=None, s
     # Perform OLS regression
     X = sm.add_constant(x)
     model = sm.OLS(y, X).fit(cov_type="HAC", cov_kwds={"maxlags": 4}) # Newey-West with 4 lags 
-    # model = sm.OLS(y, X).fit() # Regular regression
     y_pred = model.predict(X)
-    
     
     # Save regression summary to text file
     if save is not None:
@@ -25,19 +23,20 @@ def scatter_countries(ax, x, y, codes, x_label=None, y_label=None, title=None, s
             f.write(model.summary().as_text())
 
     # Plot data
-    ax.scatter(x, y, color='blue', s=10, label="Countries")
-
-    # Add data labels
-    texts = []
-    for i, code in enumerate(codes):
-        text = ax.text(x.iloc[i], y.iloc[i], code, fontsize=8)
-        texts.append(text)
-    adjust_text(texts, ax=ax, force_text=2, arrowprops=dict(arrowstyle="-", color='blue'))
+    ax.scatter(x, y, color='black', s=3, label="Countries")
 
     # Plot regression line
     x_max = x.max()
     y_max = y_pred.iloc[x.argmax()]
     ax.plot([0, x_max], [model.params["const"], y_max], color='red', linewidth=2, linestyle="dotted", label='Regression line')
+
+    # Add data labels
+    texts = []
+    for i, code in enumerate(codes):
+        text = ax.text(x.iloc[i], y.iloc[i], code, fontsize=6)
+        texts.append(text)
+    adjust_text(texts, ax=ax, force_text=1, force_objects=1, arrowprops=dict(arrowstyle="-", color='black'))
+
 
     if riskfree is not None:
         ax.plot([0, x_max], [riskfree, riskfree + 3 * x_max], color='green', linewidth=2, linestyle="dashed", label='RRA = 3')

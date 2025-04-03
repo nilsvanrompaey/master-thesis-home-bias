@@ -50,6 +50,8 @@ class DSDataSource(DataSource):
 
     def filter_period(self, period):
         start, end = period
-        self.data = self.data.loc[:, [year in range(2010,2014) for year in self.data.columns.year]]
+        mask = [(year in range(start, end + 1)) or (year == start - 1 and month == 12) 
+                for year, month in zip(self.data.columns.year, self.data.columns.month)]
+        self.data = self.data.loc[:, mask]
         return self.data
 

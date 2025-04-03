@@ -7,6 +7,7 @@ from .fed import FEDDataSource
 from .wfe import WFEDataSource
 from .wb import WBDataSource
 from .gdp import GDPDataSource, GDPDataFrame
+from .gdppc import GDPPCDataSource, GDPPCDataFrame
 
 __all__ = [
     # Template data source class
@@ -19,8 +20,10 @@ __all__ = [
     "WFEDataSource",
     "WBDataSource",
     "GDPDataSource",
+    "GDPPCDataSource",
 
     # Dataframe classes
     "CPISDataFrame",
     "GDPDataFrame",
+    "GDPPCDataFrame",
 ]

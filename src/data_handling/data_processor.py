@@ -5,6 +5,7 @@ import pandas as pd
 
 from .data_sources import CPISDataSource, DSDataSource, FEDDataSource, WFEDataSource, WBDataSource, GDPDataSource
 from .data_manager import DataManager
+from utils import annual_to_monthly_return
 
 def compute_weights(cpis, wb, major, offshore):
     foreign_investments = cpis
@@ -45,6 +46,31 @@ def reallocate_offshore_investments(investments, major, offshore):
 
     return result
 
+def compute_index_excess_returns(ds, fed, major):
+    returns = ds.loc[major].pct_change(axis=1, fill_method=None).iloc[:,1:]
+    riskfree_rate = annual_to_monthly_return(fed.iloc[0])
+    excess_returns = returns - riskfree_rate 
+    return excess_returns
+
+def compute_excess_returns_statistics(index_excess_returns, weights):
+    return_statistics = {}
+    
+    mean_index_excess_returns = index_excess_returns.mean(axis=1)
+    var_index_excess_returns = index_excess_returns.var(axis=1)
+    
+    mean_portfolio_excess_returns =  mean_index_excess_returns @ weights
+    var_portfolio_excess_returns = var_index_excess_returns @ weights
+    
+    cov_index_portfolio = (index_excess_returns.T.cov() @ weights).values.diagonal()
+    cov_index_portfolio = pd.Series(cov_index_portfolio, index=weights.columns)
+
+    return_statistics["mean_index"] = mean_index_excess_returns
+    return_statistics["var_index"] = var_index_excess_returns
+    return_statistics["mean_portfolio"] = mean_portfolio_excess_returns
+    return_statistics["var_portfolio"] = var_portfolio_excess_returns
+    return_statistics["cov_index_portfolio"] = cov_index_portfolio
+
+    return return_statistics
 
 # def distribute_offshore_holdings(offshore_investments, offshore_weights):
 #     """Distribute offshore holdings based on investments and weights."""
