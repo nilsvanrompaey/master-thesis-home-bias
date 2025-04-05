@@ -25,8 +25,8 @@ dm = DataManager(
     raw_dir = "./data/raw",
     save_dir = "./data/clean"
 )
-ds_full = dm.get_dataset("ds")
-fed_full = dm.get_dataset("fed")
+ds_full = dm.sources["ds"].filter_period((None, 2004))
+fed_full = dm.sources["fed"].filter_period((None, 2004))
 dm.filter_data(None, period)
 
 # Access datasets
@@ -38,7 +38,8 @@ wfe = dm.get_dataset("wfe")
 gdp = dm.get_dataset("gdp")
 gdppc = dm.get_dataset("gdppc")
 
-index_excess_returns = compute_index_excess_returns(ds_full, fed_full, major)
+# index_excess_returns = compute_index_excess_returns(ds_full, fed_full, major)
+index_excess_returns = compute_index_excess_returns(ds, fed, major)
 weights = compute_weights(cpis, wb, major, offshore).mean(axis=1).unstack(level="Country")
 return_statistics = compute_excess_returns_statistics(index_excess_returns, weights)
 domestic_investments = compute_domestic_investments(cpis, wb, major).droplevel(1)

@@ -182,6 +182,10 @@ class CPISDataSource(DataSource):
 
     def filter_period(self, period):
         start, end = period
+        if start is None:
+            start = min(self.data.columns)
+        if end is None:
+            end = max(self.data.columns)
         self.data = self.data[range(start, end+1)]
         return self.data
 
