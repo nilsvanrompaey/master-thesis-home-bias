@@ -24,6 +24,12 @@ def compute_domestic_investments(cpis, wb, major):
     domestic_investments.index = pd.MultiIndex.from_arrays([domestic_investments.index, domestic_investments.index], names=["Country", "Counterpart Country"])
     return domestic_investments
 
+def compute_total_investments(cpis, wb, major):
+    domestic_investments = compute_domestic_investments(cpis, wb, major)
+    total_outward_investments = cpis.get_data(holders=major, issuers="WR").droplevel(1)
+    total_investments = domestic_investments + total_outward_investments
+    return total_investments
+
 def reallocate_offshore_investments(investments, major, offshore):
     sample = major + offshore
     investments = investments.get_data(issuers=sample, holders=sample)

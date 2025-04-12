@@ -17,18 +17,17 @@ from data_handling.data_processor import *
 from plot import *
 from utils import *
 
-def run_figure20(save=None):
+def run_figure20(save=None, period=None):
     major = COUNTRIES.MAJOR
     offshore = COUNTRIES.OFFSHORE
-    sample = major + offshore
-    period = (2001, 2004)
+    period = (None, None) if period is None else period
     dm = DataManager(
         raw_dir = "./data/raw",
         save_dir = "./data/clean"
     )
-    ds_full = dm.sources["ds"].filter_period((None, 2004))
-    fed_full = dm.sources["fed"].filter_period((None, 2004))
-    dm.filter_data(None, period)
+    ds_full = dm.sources["ds"].filter_period(period)
+    fed_full = dm.sources["fed"].filter_period(period)
+    dm.filter_data(None, (2001, 2004))
 
     # Access datasets
     cpis = dm.get_dataset("cpis")
@@ -44,13 +43,18 @@ def run_figure20(save=None):
     weights = compute_weights(cpis, wb, major, offshore).mean(axis=1).unstack(level="Country")
     return_statistics = compute_excess_returns_statistics(index_excess_returns, weights)
     domestic_investments = compute_domestic_investments(cpis, wb, major).droplevel(1)
-    y = domestic_investments / gdp; y = y.mean(axis=1)
+    total_outward_investments = cpis.get_data(holders=major, issuers="WR").droplevel(1)
+    total_investments = domestic_investments + total_outward_investments  
+
+    y = total_investments / gdp; y = y.mean(axis=1)
     X_1 = gdppc.mean(axis=1)
     X_2 = return_statistics["mean_portfolio"]
     X_3 = return_statistics["var_portfolio"]
     X = pd.concat([X_1, X_2, X_3], axis=1, keys=["gdp/cap", "mean", "var"])
 
     X=(X-X.mean())/X.std() # Normalize
+    # X["gdp/cap"] /= 1e4
+    # X[["mean", "var"]] *= 1e2
     X = sm.add_constant(X).sort_index()
 
     vif_data = pd.DataFrame()
@@ -58,15 +62,18 @@ def run_figure20(save=None):
     vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
     print(vif_data)
 
-    for cov_type in ["HAC", "HC0", "HC1", "HC2", "HC3"]:
-        cov_kwds = {"maxlags": 4} if cov_type == "HAC" else {}
-        model = sm.OLS(y, X).fit(cov_type=cov_type, cov_kwds=cov_kwds) # Newey-West with 4 lags 
-        y_pred = model.predict(X)
-        print(model.summary())
+    cov_type = "HAC"
+    cov_kwds = {"maxlags": 0} if cov_type == "HAC" else {}
+    model = sm.OLS(y, X).fit(cov_type=cov_type, cov_kwds=cov_kwds)
+    print(model.summary())
 
-        if save is not None:
-            with open(f"./output/{save}/results/{cov_type}.txt", "w") as f:
-                f.write(model.summary().as_text())
+    if save is not None:
+        save_dir = f"./output/exp2/results/"
+        os.makedirs(save_dir, exist_ok=True)
+        
+        with open(os.path.join(save_dir, f"{save}.txt"), "w") as f:
+            f.write(model.summary().as_text())
 
 if __name__ == "__main__":
-	run_figure20(save=None)
+    run_figure20(save="2a_short", period=(2001, 2004))
+    run_figure20(save="2a_long", period=(None, 2004))
