@@ -17,7 +17,7 @@ from data_handling.data_processor import *
 from plot import *
 from utils import *
 
-def run_figure20(save=None, period=None):
+def run_figure2a(save=None, period=None):
     major = COUNTRIES.MAJOR
     offshore = COUNTRIES.OFFSHORE
     period = (None, None) if period is None else period
@@ -75,5 +75,5 @@ def run_figure20(save=None, period=None):
             f.write(model.summary().as_text())
 
 if __name__ == "__main__":
-    run_figure20(save="2a_short", period=(2001, 2004))
-    run_figure20(save="2a_long", period=(None, 2004))
+    run_figure2a(save="2a_short", period=(2001, 2004))
+    run_figure2a(save="2a_long", period=(None, 2004))
