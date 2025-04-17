@@ -123,3 +123,24 @@ def neumann_series(df):
     S = np.linalg.inv(I - A)
 
     return pd.DataFrame(S, index=df.index, columns=df.columns)
+
+def create_monthly_duplicates(df, monthly_columns=None, interpolate=False):
+
+    n_years = df.shape[1]-1 if interpolate else df.shape[1] 
+    df_monthly = pd.DataFrame(index=df.index)
+
+    for i in range(n_years):
+        for j in range(12):
+            if interpolate:
+                df_monthly[i*12+j] = ( df.iloc[:,i]*(11-j) + df.iloc[:,i+1]*(1+j) ) / 12
+            else:
+                df_monthly[i*12+j] = df.iloc[:,i]
+
+    df_monthly.columns = monthly_columns if monthly_columns is not None else df_monthly.columns
+
+    return df_monthly
+
+
+def generate_exponential_decay(initial=1, ratio=0.9, length=60):
+
+    return [initial * (ratio ** i) for i in range(length-1,-1,-1)]
