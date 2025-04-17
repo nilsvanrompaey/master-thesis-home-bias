@@ -66,7 +66,7 @@ def run_figure2b(save=None, justification=False):
     print(model_panel_e.summary)
 
     if save is not None:
-        save_dir = f"../output/exp2/results/"
+        save_dir = f"./output/exp2/results/"
         os.makedirs(save_dir, exist_ok=True)
         
         with open(os.path.join(save_dir, f"{save}.txt"), "w") as f:
