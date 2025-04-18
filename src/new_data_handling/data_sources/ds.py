@@ -50,6 +50,8 @@ class DSDataSource(DataSource):
     def import_raw_data(self):
         """Import DS data from Excel file."""
         self.raw = pd.read_excel(self.file_path, sheet_name=0, index_col=0)
+        self.local_raw = pd.read_excel(self.file_path, sheet_name=1, index_col=0)
+        self.exchange_raw = pd.read_excel(self.file_path, sheet_name=2, index_col=0)
         return self.raw
     
     def clean_raw_data(self):
@@ -62,21 +64,54 @@ class DSDataSource(DataSource):
             pd.DataFrame: Cleaned DS data
         """
         
-        self.data = self.raw
+        self.data = self.clean_returns_data()
+        self.local = self.clean_local_data()
+        self.exchange = self.clean_exchange_data()
 
-        # Filtering and renaming columns
+        for country in self.exchange.index.intersection(self.local.index):
+            exchange_rate = self.exchange.loc[country]
+            local_prices = self.local.loc[country]
+            usd_prices = local_prices / exchange_rate
+            self.data.loc[country] = usd_prices
+
+    def clean_returns_data(self):
+
+        # Copy raw data
+        self.data = self.raw.copy()
+        # Columns
         self.data.columns = pd.to_datetime(self.data.columns)
-
-        # Filtering and renaming indices
+        # Indices
         self.data.index = [index.split('-')[0] for index in self.data.index]
-        self.data = self.data.loc[DS.COUNTRIES]
+        valid_index = [country for country in DS.COUNTRIES if country in self.data.index]
+        self.data = self.data.loc[valid_index]
         self.data.index = [DS.COUNTRY_TO_CODE[index] for index in self.data.index]
         self.data.index.name = "Country"
 
-        # Replacing self.data for Indonesia
-        for date, value in DS.ID_MODIFICATIONS.items():
-            date =  pd.to_datetime(date, dayfirst=True)
-            self.data.loc["ID", date] = value
-        
         return self.data
 
+    def clean_local_data(self):
+        
+        # Copy raw data
+        self.local = self.local_raw.copy()
+        # Columns
+        self.local.columns = pd.to_datetime(self.local.columns)
+        # Indices
+        self.local.index = [index.split('-')[0] for index in self.local.index]
+        self.local = self.local.loc[DS.COUNTRIES]
+        self.local.index = [DS.COUNTRY_TO_CODE[index] for index in self.local.index]
+        self.local.index.name = "Country"
+
+        return self.local
+    
+    def clean_exchange_data(self):
+
+        # Copy raw data
+        self.exchange = self.exchange_raw.copy()
+        # Columns
+        self.exchange.columns = pd.to_datetime(self.exchange.columns)
+        # Indices
+        self.exchange.index = [index.split(" ")[0] for index in self.exchange.index]
+        self.exchange.index = [DS.EXCHANGE_RATES[index] for index in self.exchange.index]
+        self.local.index.name = "Country"
+
+        return self.exchange
