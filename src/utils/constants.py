@@ -7,7 +7,6 @@ from utils.constants_values.cpis_country_to_code import CPIS_COUNTRY_TO_CODE
 from utils.constants_values.countries import MAJOR_ECONOMIES, OFFSHORE_CENTERS
 from utils.constants_values.wfe_modifications import WFE_MODIFICATIONS
 from utils.constants_values.wb_codes_2_to_3 import WB_CODES_2_TO_3
-from utils.constants_values.ds_id_modifications import DS_ID_MODIFICATIONS
 from utils.constants_values.ds_modifications import DS_EXCHANGE_RATES
 
 class DS:
@@ -15,7 +14,6 @@ class DS:
     COUNTRIES = list(COUNTRY_TO_CODE.keys())
     CODES = list(COUNTRY_TO_CODE.values())
     CODE_TO_COUNTRY = {v: k for k, v in COUNTRY_TO_CODE.items()}
-    ID_MODIFICATIONS = DS_ID_MODIFICATIONS
     EXCHANGE_RATES = DS_EXCHANGE_RATES
 
 class WFE:

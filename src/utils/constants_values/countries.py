@@ -42,7 +42,7 @@ MAJOR_ECONOMIES = [
     "PH",  # Philippines
     "PL",  # Poland
     "PT",  # Portugal
-    # "RU",  # Russia
+    "RU",  # Russia
     "SE",  # Sweden
     "SG",  # Singapore
     "TH",  # Thailand

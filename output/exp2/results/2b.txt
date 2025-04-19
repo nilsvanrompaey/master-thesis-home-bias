@@ -3,8 +3,8 @@
 Dep. Variable:                      0   R-squared:                        0.0714
 Estimator:                   PanelOLS   R-squared (Between):             -0.0500
 No. Observations:                 148   R-squared (Within):               0.0714
-Date:                Thu, Apr 17 2025   R-squared (Overall):             -0.0402
-Time:                        13:36:16   Log-likelihood                    20.022
+Date:                Fri, Apr 18 2025   R-squared (Overall):             -0.0402
+Time:                        13:02:53   Log-likelihood                    20.022
 Cov. Estimator:        Driscoll-Kraay                                           
                                         F-statistic:                      2.7661
 Entities:                          37   P-value                           0.0454

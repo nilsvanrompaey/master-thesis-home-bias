@@ -25,7 +25,7 @@ DS_COUNTRY_TO_CODE = {
     "MALAYSIA": "MY",
     "MEXICO": "MX",
     "NETHERLAND": "NL",
-    # "NEW ZEALAN": "NL",
+    # "NEW ZEALAN": "NZ",
     "NORWAY": "NO",
     "PHILIPPINE": "PH",
     "POLAND": "PL",
@@ -40,5 +40,6 @@ DS_COUNTRY_TO_CODE = {
     "TURKEY": "TR",
     "UK": "GB",
     "US": "US",
-    "VENEZUELA": "VE"
+    "VENEZUELA": "VE",
+    "WORLD": "WR",
 }
