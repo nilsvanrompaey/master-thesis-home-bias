@@ -35,8 +35,8 @@ MAJOR_ECONOMIES = [
     "IT",  # Italy
     "JP",  # Japan
     "KR",  # South Korea
-    "MY",  # Malaysia
     "MX",  # Mexico
+    "MY",  # Malaysia
     "NL",  # Netherlands
     "NO",  # Norway
     "PH",  # Philippines

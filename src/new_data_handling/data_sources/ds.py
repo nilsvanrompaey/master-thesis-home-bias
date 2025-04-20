@@ -73,6 +73,7 @@ class DSDataSource(DataSource):
             local_prices = self.local.loc[country]
             usd_prices = local_prices / exchange_rate
             self.data.loc[country] = usd_prices
+        self.data = self.data.sort_index()
 
     def clean_returns_data(self):
 
