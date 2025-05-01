@@ -78,7 +78,7 @@ def run_figure2b(save=None, justification=False):
 
         print(f" \n e: {model_panel_e.f_pooled}, \n t: {model_panel_t.f_pooled}, \n et: {model_panel_et.f_pooled} \n")
 
-        model_random = RandomEffects(y, X).fit(cov_type="kernel", kernel="bartlett")
+        model_random = RandomEffects(y, X).fit(cov_type="kernel", kernel="bartlett", bandwidth=0)
         chi2, df, pval = hausman(model_panel_e, model_random)
         print(f"chi2: {chi2}, df: {df}, pval: {pval}")
 
