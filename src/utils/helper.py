@@ -1,3 +1,5 @@
+import os
+import shutil
 import pandas as pd
 import numpy as np
 import numpy.linalg as la
@@ -157,3 +159,22 @@ def hausman(fe, re):
 
     pval = stats.chi2.sf(chi2, df)
     return chi2, df, pval
+
+
+def copy_files(
+        src_dir = "C:/Users/nilsv/OneDrive/School/KUL - MME/Home bias/master-thesis-home-bias/output/exp3/results/figures",
+        dst_dir = "C:/Users/nilsv/OneDrive/School/KUL - MME/Home bias/tex/src/img",
+):
+    # Ensure destination exists
+    os.makedirs(dst_dir, exist_ok=True)
+
+    # Copy everything from source to destination
+    for item in os.listdir(src_dir):
+        s = os.path.join(src_dir, item)
+        d = os.path.join(dst_dir, item)
+        if os.path.isdir(s):
+            shutil.copytree(s, d, dirs_exist_ok=True)
+        else:
+            shutil.copy2(s, d)
+
+    return None
