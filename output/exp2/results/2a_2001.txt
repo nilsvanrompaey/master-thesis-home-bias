@@ -1,0 +1,27 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                   2001   R-squared:                       0.226
+Model:                            OLS   Adj. R-squared:                  0.157
+Method:                 Least Squares   F-statistic:                     8.105
+Date:                Wed, 07 May 2025   Prob (F-statistic):           0.000331
+Time:                        00:11:56   Log-Likelihood:                -29.799
+No. Observations:                  38   AIC:                             67.60
+Df Residuals:                      34   BIC:                             74.15
+Df Model:                           3                                         
+Covariance Type:                  HAC                                         
+=====================================================================================
+                        coef    std err          z      P>|z|      [0.025      0.975]
+-------------------------------------------------------------------------------------
+const                 0.6634      0.086      7.715      0.000       0.495       0.832
+('gdp/cap', 2001)     0.2764      0.124      2.221      0.026       0.032       0.520
+('mean', 0)          -0.0287      0.056     -0.513      0.608      -0.139       0.081
+('var', 1)           -0.0316      0.076     -0.419      0.675      -0.180       0.116
+==============================================================================
+Omnibus:                       38.104   Durbin-Watson:                   1.952
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):              127.499
+Skew:                           2.334   Prob(JB):                     2.06e-28
+Kurtosis:                      10.664   Cond. No.                         2.41
+==============================================================================
+
+Notes:
+[1] Standard Errors are heteroscedasticity and autocorrelation robust (HAC) using 0 lags and without small sample correction

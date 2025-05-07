@@ -26,8 +26,6 @@ def run_figure2b(save=None, justification=False):
         save_dir = "./data/clean"
     )
 
-    save = "2b"
-    justification = True
     period = (2001,2004)
     cpis = dm.cpis.get_data(period=period)
     wb = dm.wb.get_data(countries=major, period=period)
@@ -51,8 +49,6 @@ def run_figure2b(save=None, justification=False):
     for year in years:
         ds_year[year] = ds.get_data(period=(year-4, year), interval="M")
         fed_year[year] = fed.get_data(period=(year-4, year))
-
-    for year in years:
         index_excess_returns = compute_index_excess_returns(ds_year[year], fed_year[year], major)
         return_statistics = compute_excess_returns_statistics(index_excess_returns, weights)
         X_2.loc[(slice(None), year), :] = return_statistics["mean_portfolio"].values
@@ -62,7 +58,8 @@ def run_figure2b(save=None, justification=False):
     X = (X-X.mean())/X.std() # Normalize
     X = sm.add_constant(X)
 
-    model_panel_e = PanelOLS(y, X, entity_effects=True).fit(cov_type="kernel", kernel="bartlett", bandwidth=0)
+    # model_panel_e = PanelOLS(y, X, entity_effects=True).fit(cov_type="kernel", kernel="bartlett", bandwidth=0)
+    model_panel_e = PooledOLS(y, X).fit(cov_type="clustered",  cluster_entity=True, cluster_time=True)
     print(model_panel_e.summary)
 
     if save is not None:
@@ -83,4 +80,4 @@ def run_figure2b(save=None, justification=False):
         print(f"chi2: {chi2}, df: {df}, pval: {pval}")
 
 if __name__ == "__main__":
-    run_figure2b(save="2b", justification=True)
+    run_figure2b(save="2b", justification=False)

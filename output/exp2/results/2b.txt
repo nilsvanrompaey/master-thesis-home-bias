@@ -1,18 +1,18 @@
-                          PanelOLS Estimation Summary                           
+                          PooledOLS Estimation Summary                          
 ================================================================================
-Dep. Variable:                      0   R-squared:                        0.0944
-Estimator:                   PanelOLS   R-squared (Between):              0.1101
-No. Observations:                 152   R-squared (Within):               0.0944
-Date:                Thu, May 01 2025   R-squared (Overall):              0.1088
-Time:                        01:36:40   Log-likelihood                    24.114
-Cov. Estimator:        Driscoll-Kraay                                           
-                                        F-statistic:                      3.8591
-Entities:                          38   P-value                           0.0114
-Avg Obs:                       4.0000   Distribution:                   F(3,111)
+Dep. Variable:                      0   R-squared:                        0.1542
+Estimator:                  PooledOLS   R-squared (Between):              0.1621
+No. Observations:                 152   R-squared (Within):               0.0643
+Date:                Wed, May 07 2025   R-squared (Overall):              0.1542
+Time:                        02:08:52   Log-likelihood                   -161.86
+Cov. Estimator:             Clustered                                           
+                                        F-statistic:                      8.9959
+Entities:                          38   P-value                           0.0000
+Avg Obs:                       4.0000   Distribution:                   F(3,148)
 Min Obs:                       4.0000                                           
-Max Obs:                       4.0000   F-statistic (robust):             3522.4
+Max Obs:                       4.0000   F-statistic (robust):             13.146
                                         P-value                           0.0000
-Time periods:                       4   Distribution:                   F(3,111)
+Time periods:                       4   Distribution:                   F(3,148)
 Avg Obs:                       38.000                                           
 Min Obs:                       38.000                                           
 Max Obs:                       38.000                                           
@@ -21,14 +21,8 @@ Max Obs:                       38.000
 ==============================================================================
             Parameter  Std. Err.     T-stat    P-value    Lower CI    Upper CI
 ------------------------------------------------------------------------------
-const          0.7201     0.0248     29.003     0.0000      0.6709      0.7693
-gdp/cap        0.0708     0.0646     1.0951     0.2758     -0.0573      0.1989
-mean           0.0494     0.0078     6.3330     0.0000      0.0339      0.0648
-var           -0.1106     0.0135    -8.1652     0.0000     -0.1374     -0.0838
+const          0.7201     0.0946     7.6097     0.0000      0.5331      0.9071
+gdp/cap        0.2360     0.0879     2.6854     0.0081      0.0623      0.4097
+mean           0.0466     0.0312     1.4971     0.1365     -0.0149      0.1082
+var           -0.1060     0.0560    -1.8930     0.0603     -0.2167      0.0047
 ==============================================================================
-
-F-test for Poolability: 31.662
-P-value: 0.0000
-Distribution: F(37,111)
-
-Included effects: Entity
