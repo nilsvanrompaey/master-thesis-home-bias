@@ -162,25 +162,26 @@ def hausman(fe, re):
 
 
 def copy_files(
-        src_dir="C:/Users/nilsv/OneDrive/School/KUL - MME/Home bias/master-thesis-home-bias/output/exp3/results/figures",
+        src_dir="C:/Users/nilsv/OneDrive/School/KUL - MME/Home bias/master-thesis-home-bias/output/",
         dst_dir="C:/Users/nilsv/OneDrive/School/KUL - MME/Home bias/tex/src/img",
+        overwrite=True
 ):
     # Ensure destination folder exists
     os.makedirs(dst_dir, exist_ok=True)
 
-    # Recursively walk through source directory
     for root, _, files in os.walk(src_dir):
         for file in files:
             if file.lower().endswith(".pdf"):
                 src_path = os.path.join(root, file)
                 dst_path = os.path.join(dst_dir, file)
 
-                # Handle duplicate filenames by appending a counter
-                base, ext = os.path.splitext(file)
-                counter = 1
-                while os.path.exists(dst_path):
-                    dst_path = os.path.join(dst_dir, f"{base}_{counter}{ext}")
-                    counter += 1
+                # Handle duplicates
+                if not overwrite and os.path.exists(dst_path):
+                    base, ext = os.path.splitext(file)
+                    counter = 1
+                    while os.path.exists(dst_path):
+                        dst_path = os.path.join(dst_dir, f"{base}_{counter}{ext}")
+                        counter += 1
 
                 shutil.copy2(src_path, dst_path)
 
