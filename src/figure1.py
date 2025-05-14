@@ -15,8 +15,8 @@ dm = DataManager(
 
 dm.load_data()
 
-period = (2001,2004)
-dm.filter_data(None, period)
+# period = (2001,2004)
+# dm.filter_data(None, period)
 
 ds = dm.get_dataset("ds")
 fed = dm.get_dataset("fed")
@@ -64,7 +64,10 @@ def run_figure1(codes, save_name):
 					)
 	plt.suptitle("Monthly excess returns 2001-2004 (USD)")
 	plt.tight_layout()
-	plt.savefig(f"./output/exp1/figures/fig1{save_name}.png", dpi=600)
+	plt.savefig(f"./output/exp1/figures/fig1{save_name}.pdf", dpi=600)
 
 if __name__ == "__main__":
-	run_figure1(codes=DS.CODES, save_name="")
+	codes = COUNTRIES.MAJOR
+	run_figure1(codes=codes, save_name="")
+	# codes.remove("TR")
+	# run_figure1(codes=codes, save_name="_exTR")

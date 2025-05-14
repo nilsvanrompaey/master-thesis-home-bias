@@ -16,6 +16,28 @@ from new_data_handling import DataManager
 from plot import *
 from new_data_handling.data_processor import *
 
+# Variances (rolling window, exponential decay)
+def calculate_exponentially_weighted_variance(period, panel_dates, ratio):
+    dm = DataManager(
+        raw_dir = "./data/raw",
+        save_dir = "./data/clean"
+    )
+    major = COUNTRIES.MAJOR
+    ds = dm.ds.get_data(period=period, interval="M")
+    fed = dm.fed.get_data(period=period)
+    returns_index_historical = compute_index_excess_returns(ds, fed, major)
+    variances = pd.DataFrame(index=major, columns=panel_dates)
+    for i in range(48):
+        returns = returns_index_historical.iloc[:,i:i+60]
+        means = returns.mean(axis=1)
+        returns_demeaned = returns.sub(means, axis=0)
+        var_contributions = returns_demeaned**2
+        factors = generate_exponential_decay(ratio=ratio)
+        variances_temp = var_contributions.mul(factors).sum(axis=1) / sum(factors)
+        variances.iloc[:,i] = variances_temp
+    variances = variances.stack().rename("variances").astype(float)
+    return variances
+
 def run_figure2b(save=None, justification=False):
     major = COUNTRIES.MAJOR
     offshore = COUNTRIES.OFFSHORE
@@ -47,19 +69,22 @@ def run_figure2b(save=None, justification=False):
     fed_year = {}
     years = [2001, 2002, 2003, 2004]
     for year in years:
-        ds_year[year] = ds.get_data(period=(year-4, year), interval="M")
-        fed_year[year] = fed.get_data(period=(year-4, year))
+        period_temp = (year-4, year)
+        ds_year[year] = ds.get_data(period=period_temp, interval="M")
+        fed_year[year] = fed.get_data(period=period_temp)
         index_excess_returns = compute_index_excess_returns(ds_year[year], fed_year[year], major)
         return_statistics = compute_excess_returns_statistics(index_excess_returns, weights)
         X_2.loc[(slice(None), year), :] = return_statistics["mean_portfolio"].values
         X_3.loc[(slice(None), year), :] = return_statistics["var_portfolio"].values
+        variances = calculate_exponentially_weighted_variance((1997,2005), index_excess_returns.columns, 0.9)
+
     X = pd.concat([X_1, X_2, X_3], axis=1)
     # X = pd.DataFrame(X_1, columns=['gdp/cap'])
     X = (X-X.mean())/X.std() # Normalize
     X = sm.add_constant(X)
 
-    # model_panel_e = PanelOLS(y, X, entity_effects=True).fit(cov_type="kernel", kernel="bartlett", bandwidth=0)
-    model_panel_e = PooledOLS(y, X).fit(cov_type="clustered",  cluster_entity=True, cluster_time=True)
+    model_panel_e = PanelOLS(y, X, entity_effects=True).fit(cov_type="clustered",  cluster_entity=True, cluster_time=True)
+    # model_panel_e = PooledOLS(y, X).fit(cov_type="clustered",  cluster_entity=True, cluster_time=True)
     print(model_panel_e.summary)
 
     if save is not None:
